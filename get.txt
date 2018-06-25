@@ -8,4 +8,5 @@ if ( file_exists( $yol ) ) {
 @fwrite($kayit,$h);
 @fwrite($kayit,"\r\r");
 @fclose($kayit);
+echo "siktikl";
  }
