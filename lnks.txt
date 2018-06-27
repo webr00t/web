@@ -5,7 +5,7 @@ import time
 import socket
 import random
 from threading import Thread
-ip="185.126.178.11"
+ip=sys.argv[1]
 port=0
 threads=100
 endtime=30
