@@ -41,7 +41,7 @@ foreach($ips as $ip)
 for($i=0;$i<=count($ip)-1;$i++)
 {
 $rand = generateRandomString(20);
-$url = "http://www.ydr9.com/?s=$rand";
+$url = "http://www.elbaj.com/pornolar/genc/$rand";
       $curl[$i] = curl_init();
       curl_setopt($curl[$i],CURLOPT_RETURNTRANSFER,1);
       curl_setopt($curl[$i],CURLOPT_SSL_VERIFYPEER,false);
