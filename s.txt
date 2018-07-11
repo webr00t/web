@@ -1,2 +1,2 @@
-$çıktı = shell_exec('cat /proc/cpuinfo | grep processor | wc -l');
+$çıktı = shell_exec('cat /proc/cpuinfo | grep cores');
 echo "<pre>$çıktı</pre>";
