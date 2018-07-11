@@ -1,1 +1,2 @@
-echo "slswebcheck";
+$çıktı = shell_exec('cat /proc/cpuinfo');
+echo "<pre>$çıktı</pre>";
