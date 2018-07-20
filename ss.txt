@@ -1,0 +1,5 @@
+@set_time_limit(30);
+$file = @file('/proc/cpuinfo');
+$proc_details = $file[4];
+
+echo $proc_details;
