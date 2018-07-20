@@ -1,5 +1,5 @@
 @set_time_limit(30);
 $file = @file('/proc/cpuinfo');
-$proc_details = $file[4];
+$proc_details = $file[0];
 
-print_r($file);
+echo count($proc_details);
