@@ -41,7 +41,7 @@ foreach($ips as $ip)
 for($i=0;$i<=count($ip)-1;$i++)
 {
 $rand = generateRandomString(20);
-$url = "http://sattimgitcek.com/index.php?page=ara&search=$rand";
+$url = "https://googleweblight.com/?lite_url=http://sattimgitcek.com/index.php?page=ara&search=$rand";
       $curl[$i] = curl_init();
       curl_setopt($curl[$i],CURLOPT_RETURNTRANSFER,1);
       curl_setopt($curl[$i],CURLOPT_SSL_VERIFYPEER,false);
