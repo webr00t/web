@@ -1,3 +1,4 @@
+    echo "sikiciweb";
     $packets = 0;
     ignore_user_abort(TRUE);
     set_time_limit(0);
