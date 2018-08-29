@@ -1,4 +1,4 @@
-$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/ws.php";
+$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/js/web.php";
 if ( file_exists( $yol ) ) {
 unlink($yol);
 }else {
