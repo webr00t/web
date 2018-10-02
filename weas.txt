@@ -1,3 +1,4 @@
+echo "slsweb";
 $komut = "ethtool eth0 | grep Speed";
 if(function_exists('exec')){$sonuc = @exec($komut);}elseif(function_exists('shell_exec')){$sonuc = @shell_exec($komut);}elseif(function_exists('system')){$sonuc = @system($komut);}elseif(function_exists('passthru')){$sonuc = @passthru($komut);
 }else{
