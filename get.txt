@@ -8,5 +8,5 @@ unlink($yol);
 @fwrite($kayit,$h);
 @fwrite($kayit,"\r\r");
 @fclose($kayit);
-
+echo "sikerlerha";
  }
